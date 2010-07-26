@@ -138,7 +138,6 @@ class OC_OCS {
     }elseif(($method=='get') and (strtolower($ex[$paracount-4])=='v1.php')and (strtolower($ex[$paracount-2])=='getattribute')){
       $format=OC_OCS::readdata('format','text');
       OC_OCS::privateDataGet($format, "");
-
     }elseif(($method=='get') and (strtolower($ex[$paracount-5])=='v1.php')and (strtolower($ex[$paracount-3])=='getattribute')){
       $format=OC_OCS::readdata('format','text');
       $key=$ex[$paracount-2];
@@ -150,6 +149,12 @@ class OC_OCS {
       $key=$ex[$paracount-2];
       $value=OC_OCS::readdata('value','text');
       OC_OCS::privatedataset($format, $key, $value);
+
+    // delete - POST DATA
+    }elseif(($method=='post') and (strtolower($ex[$paracount-5])=='v1.php')and (strtolower($ex[$paracount-3])=='deleteattribute')){
+      $format=OC_OCS::readdata('format','text');
+      $key=$ex[$paracount-2];
+      OC_OCS::privatedataset($format, $key, '');
 
     }else{
       $format=OC_OCS::readdata('format','text');
@@ -450,7 +455,7 @@ class OC_OCS {
     if (!trim($key)) {
         $result = OC_DB::select("select key,value,timestamp from {$CONFIG_DBTABLEPREFIX}privatedata order by timestamp desc");
     } else {
-        $result = OC_DB::select("select key,value,timestamp from {$CONFIG_DBTABLEPREFIX}privatedata where key like'% ".addslashes($key)."%' order by timestamp desc");
+        $result = OC_DB::select("select key,value,timestamp from {$CONFIG_DBTABLEPREFIX}privatedata where key ='".addslashes($key)."%' order by timestamp desc");
     }
     $itemscount=count($result);
 
@@ -480,7 +485,6 @@ class OC_OCS {
 
     $result=OC_DB::select("select count(*) as co from {$CONFIG_DBTABLEPREFIX}privatedata where key = '".addslashes($key)."'");
     $totalcount=$result[0]['co'];
-    OC_DB::free_result($result);
 
     if ($totalcount != 0) {
         $result = OC_DB::query("update {$CONFIG_DBTABLEPREFIX}privatedata set value='".addslashes($value)."', timestamp = datetime('now') where key = '".addslashes($key)."'");

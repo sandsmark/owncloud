@@ -11,6 +11,13 @@
    <name>*dbprefix*privatedata</name>
    <declaration>
      <field>
+       <name>app</name>
+       <type>text</type>
+       <default></default>
+       <notnull>true</notnull>
+       <length>64</length>
+     </field>
+     <field>
        <name>key</name>
        <type>text</type>
        <default></default>
